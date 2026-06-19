@@ -97,6 +97,88 @@ Common fill/stroke pairs (draw.io defaults — readable together): blue `#dae8fc
 green `#d5e8d4`/`#82b366`, red `#f8cecc`/`#b85450`, purple `#e1d5e7`/`#9673a6`,
 orange `#ffe6cc`/`#d79b00`, grey `#f5f5f5`/`#666666`. Pick one hue per logical domain.
 
+## House style: infrastructure & cloud diagrams
+
+Follow this so every infra diagram comes out with the same look & feel. The goal is a
+**top-down traffic flow** read like a story: where requests enter → which host they land on →
+which container/resource serves them → what they depend on.
+
+**Reference file:** `example-infra.drawio` in this directory is a minimal, validated diagram
+that applies every rule below (ingress cloud, external-sources swimlane, host swimlane with a
+nested project, orange proxy, white app box with the content recipe + inline ⚠ warning, blue
+DB cylinder, purple service, grey dashed placeholder, the three edge styles, credit box). Open
+it and copy its patterns rather than starting from scratch.
+
+### Layout (top → bottom)
+1. **Ingress at the top.** A cloud shape (`ellipse;shape=cloud`) labelled `Internet` (add the
+   public DNS/wildcard under it). Requests flow downward from here.
+2. **A "Sources externes" swimlane** top-left for things that are not hosts but feed the system
+   (Git repos, container registries, package sources). Boxes here connect to resources with
+   **dashed** edges (`build`, `pull image`).
+3. **One outer swimlane per host / trust boundary** (a server, a VM, a cluster). Its title bar
+   carries the host facts: name, IP, OS/kernel, CPU/RAM/disk, access method.
+4. **Nested swimlanes inside a host** for logical groups — one per project / namespace /
+   compose-project. Use a **dashed** swimlane for a docker-compose project box.
+5. **Resource boxes** (apps, DBs, services) live inside their group swimlane.
+6. **Title** top-left (`text`, `fontSize=16;fontStyle=1`), **source/credit box** bottom
+   (small italic, light fill) — see below.
+
+### Color = role (not decoration)
+Assign color by what a thing *is*, consistently across the whole diagram:
+
+| Role | fill / stroke | shape |
+|---|---|---|
+| Host zone — per cloud provider | provider hue, light fill: Scaleway `#f7f2fc`/`#4f0599`, generic server `#f0f7ff`/`#6c8ebf` | outer `swimlane` |
+| Ingress / reverse-proxy (Traefik, nginx, LB) | orange `#ffe6cc`/`#d79b00` | rounded box |
+| Application / web service | white `#ffffff` + group's stroke, or green `#d5e8d4`/`#82b366` | rounded box |
+| Database / storage / model volume | blue `#dae8fc`/`#6c8ebf` | `shape=cylinder3` |
+| Managed service / admin tool | purple `#e1d5e7`/`#9673a6` | rounded box |
+| Project / namespace group | one hue per project (yellow `#fff2cc`, green `#d5e8d4`, red `#f8cecc`…) | inner `swimlane` |
+| Empty / placeholder / unused | grey `#f5f5f5`/`#999999` + `dashed=1`, body text `(aucune ressource)` | inner `swimlane` |
+| Internet / network cloud | blue `#dae8fc`/`#6c8ebf` | `ellipse;shape=cloud` |
+
+### Resource box content recipe
+Left-aligned, `align=left;spacingLeft=8;fontSize=11`, white fill with the group's stroke color.
+Stack these lines (escaped `&lt;br&gt;`):
+```
+<b>name</b>            ← bold first line
+image / tech           ← e.g. postgres:16-alpine, repo@branch
+https://public.fqdn    ← the routable URL if exposed
+port :NNNN · status    ← exposed port + running:healthy / running:unknown
+<i>caveat</i>          ← italic note (healthcheck off, no FQDN, …)
+```
+Use **real values pulled live** — never `app-1`, `db`, `<host>`. Mark unknowns explicitly.
+
+### Edges carry meaning
+- **Traffic** (proxy → app): solid `edgeStyle=orthogonalEdgeStyle;rounded=1;endArrow=block`,
+  proxy-orange `#d79b00`, label with the subdomain (`webui.`, `api.`).
+- **Internal dependency** (app → db, webui → ollama): `endArrow=open`, label the link
+  (`prisma`, `OLLAMA_BASE_URL http://ollama:11434`).
+- **External feed** (registry/git → app): `dashed=1;endArrow=open`, label `pull image` / `build`.
+- An edge's `source`/`target` is a cell **id**, not its label.
+
+### Emphasis & warnings
+Flag risks inline inside the box with red bold text, not a separate shape:
+`&lt;font color=#b85450&gt;&lt;b&gt;⚠ exposé public sans auth&lt;/b&gt;&lt;/font&gt;`.
+
+### Credit / source box (always include, bottom of page)
+A bordered light box (`fillColor=#fbfbfb;strokeColor=#cccccc`, italic, `fontSize=10`) stating
+**how the data was obtained + date + known caveats**, e.g.
+`Source: live via MCP coolify (v4.1.2) + SSH — généré le YYYY-MM-DD. Caveats: …`.
+
+### Multi-host & crossing edges
+When two hosts share the same public DNS but are different machines, give **each host its own
+`Internet` entry node** instead of one shared cloud with long wires crossing the page. Short,
+local edges read far better than a web of long diagonals.
+
+### Sizing rules that prevent overlap
+- `swimlane` title bar height = `startSize`. **Bump it when the title is long or wraps**:
+  short title `startSize=24`; a host title with full specs that wraps to 2–3 lines needs
+  `startSize=40–46`, else the first child cell sits under the title. (Set `spacing=4` too.)
+- Inner project swimlanes `startSize=24`; dashed compose-project box `startSize=26`.
+- Lay boxes on the `gridSize=10` grid with ~30–40px gutters; verify `x+width` of a child stays
+  inside its swimlane and children don't overlap.
+
 ## Workflow
 
 1. Sketch the layout on a grid: pick `pageWidth`/`pageHeight`, assign each box an `x,y,w,h`.
