@@ -109,6 +109,54 @@ nested project, orange proxy, white app box with the content recipe + inline ⚠
 DB cylinder, purple service, grey dashed placeholder, the three edge styles, credit box). Open
 it and copy its patterns rather than starting from scratch.
 
+### Layout grid & edge routing — do this first, it's what makes diagrams readable
+draw.io's *auto* edge routing produces crossings, diagonals, and arrows that cut through boxes.
+The fix is to be **explicit about both node positions and edge anchors** — never leave either to
+the renderer.
+
+**1. Snap nodes to a column/row grid.** Decide a few column X's and row Y's up front and reuse
+them; don't eyeball coordinates. A node's `x` = its column, `y` = its rank. Keep a **vertical
+"flow spine"** (one center column) for the main traffic path: Internet → proxy → app stack down it.
+Side concerns (DB, storage) go in a parallel column to the **right**; feeds (git/registry) to the
+**left**. Minimum gaps: **≥60px between rows, ≥40px between columns** so orthogonal elbows have room.
+
+**2. Put explicit anchors on EVERY edge.** Add exit/entry points to the `style` so the edge always
+leaves and enters a known side. Without these, draw.io uses floating connections that re-route into
+neighbours. The four canonical patterns:
+
+| Relationship | anchors to add to the edge `style` |
+|---|---|
+| Down the spine (A above B) | `exitX=0.5;exitY=1;entryX=0.5;entryY=0` |
+| Side-to-side, same row (A left of B) | `exitX=1;exitY=0.5;entryX=0;entryY=0.5` |
+| Around a corner (A → B's bottom/top) | `exitX=1;exitY=0.5;entryX=0.5;entryY=1` |
+| Two edges into one box — offset entries | `entryX=0.5…` for one, `entryX=0.15…` for the other |
+
+Always also set `edgeStyle=orthogonalEdgeStyle;rounded=1;jettySize=auto`. Append
+`;exitDx=0;exitDy=0;entryDx=0;entryDy=0` after the X/Y pair (draw.io writes them; keep them at 0).
+
+**3. One direction per edge, never up-and-over.** Traffic flows **down** the spine; dependencies go
+**down or sideways**, never back up across the page. If a link would have to climb over other boxes,
+you placed the nodes in the wrong order — reorder the row so connected nodes are adjacent.
+
+**4. Route around obstacles with waypoints, don't cut through.** If an edge must bend around a box,
+add fixed waypoints instead of hoping auto-routing avoids it:
+```xml
+<mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;exitX=1;exitY=0.5;entryX=0.5;entryY=1" edge="1" parent="1" source="svc" target="db">
+  <mxGeometry relative="1" as="geometry">
+    <Array as="points"><mxPoint x="520" y="595" /></Array>
+  </mxGeometry>
+</mxCell>
+```
+
+**5. Keep edge labels off boxes.** Short labels only (`app.`, `query :5432`, `build`); they sit at
+the edge midpoint, so make sure that midpoint falls in empty space, not over a shape.
+
+**6. Fan-out (one proxy → many apps).** Lay the targets in a single row beneath the hub and give the
+hub **distinct exit X's** so the lines don't stack: `exitX=0.25`, `exitX=0.5`, `exitX=0.75` on the
+hub's bottom edge, each into the matching app's `entryX=0.5;entryY=0`.
+
+`example-infra.drawio` shows all six in practice — every edge there is anchored. Copy its edge styles.
+
 ### Layout (top → bottom)
 1. **Ingress at the top.** A cloud shape (`ellipse;shape=cloud`) labelled `Internet` (add the
    public DNS/wildcard under it). Requests flow downward from here.
