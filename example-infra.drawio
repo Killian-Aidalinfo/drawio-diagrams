@@ -1,0 +1,86 @@
+<mxfile host="app.diagrams.net" version="24.0.0" type="device">
+  <diagram id="example-infra" name="Example infra (house style)">
+    <mxGraphModel dx="1000" dy="720" grid="1" gridSize="10" guides="1" arrows="1" page="1" pageScale="1" pageWidth="1000" pageHeight="720" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title (text, 16/bold, top-left) -->
+        <mxCell id="title" value="Example infra — &lt;b&gt;house style&lt;/b&gt; reference" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=16;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="40" y="14" width="600" height="28" as="geometry" />
+        </mxCell>
+
+        <!-- Ingress: Internet cloud at the top -->
+        <mxCell id="internet" value="Internet&lt;br&gt;app.example.com" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="430" y="50" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- External sources swimlane (top-left) -->
+        <mxCell id="ext" value="Sources externes" style="swimlane;startSize=24;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=12;fontStyle=1;verticalAlign=top" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="320" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="git" value="&lt;b&gt;GitHub&lt;/b&gt;&lt;br&gt;org/app @main&lt;br&gt;&lt;i&gt;source CI/CD&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;align=left;spacingLeft=8" vertex="1" parent="1">
+          <mxGeometry x="60" y="95" width="280" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Ingress / reverse proxy (orange) -->
+        <mxCell id="proxy" value="&lt;b&gt;Traefik&lt;/b&gt; (reverse proxy)&lt;br&gt;:80 / :443 · TLS Let's Encrypt" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12" vertex="1" parent="1">
+          <mxGeometry x="400" y="170" width="260" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Host swimlane (per trust boundary) -->
+        <mxCell id="host" value="Serveur &lt;b&gt;vm-app-01&lt;/b&gt; — 203.0.113.10 · Debian 13 · 4 vCPU · 8 GiB RAM · disque 80 G · accès SSH" style="swimlane;startSize=30;html=1;fillColor=#f0f7ff;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;verticalAlign=top;spacing=4" vertex="1" parent="1">
+          <mxGeometry x="40" y="280" width="920" height="380" as="geometry" />
+        </mxCell>
+
+        <!-- Nested project swimlane (one hue per project) -->
+        <mxCell id="proj" value="Projet &lt;b&gt;app&lt;/b&gt; (docker compose)" style="swimlane;startSize=24;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;verticalAlign=top" vertex="1" parent="1">
+          <mxGeometry x="70" y="330" width="580" height="300" as="geometry" />
+        </mxCell>
+        <!-- Application box (white + group stroke, content recipe) -->
+        <mxCell id="app" value="&lt;b&gt;web&lt;/b&gt; (app)&lt;br&gt;ghcr.io/org/app:latest&lt;br&gt;https://app.example.com&lt;br&gt;port :8080 · running:healthy&lt;br&gt;&lt;font color=#b85450&gt;&lt;b&gt;⚠ admin sans auth&lt;/b&gt;&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=11;align=left;spacingLeft=8" vertex="1" parent="1">
+          <mxGeometry x="100" y="370" width="300" height="130" as="geometry" />
+        </mxCell>
+        <!-- Service / admin tool (purple) -->
+        <mxCell id="svc" value="&lt;b&gt;pgAdmin&lt;/b&gt; (service)&lt;br&gt;dpage/pgadmin4:latest&lt;br&gt;https://db.example.com&lt;br&gt;running:healthy" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;align=left;spacingLeft=8" vertex="1" parent="1">
+          <mxGeometry x="100" y="530" width="300" height="80" as="geometry" />
+        </mxCell>
+        <!-- Database (blue cylinder) -->
+        <mxCell id="db" value="&lt;b&gt;PostgreSQL&lt;/b&gt;&lt;br&gt;postgres:16-alpine&lt;br&gt;privé (interne)&lt;br&gt;healthy" style="shape=cylinder3;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;boundedLbl=1" vertex="1" parent="1">
+          <mxGeometry x="450" y="380" width="160" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Empty / placeholder group (grey dashed) -->
+        <mxCell id="proj2" value="Projet &lt;b&gt;reserved&lt;/b&gt;" style="swimlane;startSize=24;html=1;fillColor=#f5f5f5;strokeColor=#999999;fontSize=12;fontStyle=1;verticalAlign=top;dashed=1" vertex="1" parent="1">
+          <mxGeometry x="680" y="330" width="250" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="empty" value="(aucune ressource)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=12;fontStyle=2" vertex="1" parent="1">
+          <mxGeometry x="700" y="380" width="210" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Edges: traffic (block, orange), dependency (open), external feed (dashed) -->
+        <mxCell id="e-int-proxy" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;strokeColor=#6c8ebf" edge="1" parent="1" source="internet" target="proxy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-proxy-app" value="app." style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=block;strokeColor=#d79b00;fontSize=10" edge="1" parent="1" source="proxy" target="app">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-app-db" value="query :5432" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;strokeColor=#6c8ebf;fontSize=10" edge="1" parent="1" source="app" target="db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-svc-db" value="admin" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;endArrow=open;strokeColor=#9673a6;fontSize=10" edge="1" parent="1" source="svc" target="db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e-git-app" value="build" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;endArrow=open;strokeColor=#333333;fontSize=10" edge="1" parent="1" source="git" target="app">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Credit / source box (bottom) -->
+        <mxCell id="credit" value="Source : exemple de référence du house style (statique) — remplacer par 'live via MCP/SSH — généré le YYYY-MM-DD' + caveats dans un vrai diagramme." style="text;html=1;strokeColor=#cccccc;fillColor=#fbfbfb;align=left;verticalAlign=middle;fontSize=10;fontStyle=2;spacingLeft=6" vertex="1" parent="1">
+          <mxGeometry x="40" y="675" width="920" height="32" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -103,6 +103,12 @@ Follow this so every infra diagram comes out with the same look & feel. The goal
 **top-down traffic flow** read like a story: where requests enter → which host they land on →
 which container/resource serves them → what they depend on.
 
+**Reference file:** `example-infra.drawio` in this directory is a minimal, validated diagram
+that applies every rule below (ingress cloud, external-sources swimlane, host swimlane with a
+nested project, orange proxy, white app box with the content recipe + inline ⚠ warning, blue
+DB cylinder, purple service, grey dashed placeholder, the three edge styles, credit box). Open
+it and copy its patterns rather than starting from scratch.
+
 ### Layout (top → bottom)
 1. **Ingress at the top.** A cloud shape (`ellipse;shape=cloud`) labelled `Internet` (add the
    public DNS/wildcard under it). Requests flow downward from here.
