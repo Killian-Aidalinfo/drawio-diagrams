@@ -6,6 +6,12 @@ d'architecture / infra, flowcharts, network maps, org charts, boîtes-et-flèche
 est un fichier **éditable et ouvrable** dans diagrams.net ou l'extension VS Code draw.io —
 pas une image exportée.
 
+## URL du skill
+
+- Skill : <https://github.com/Killian-Aidalinfo/drawio-diagrams>
+- SKILL.md : <https://github.com/Killian-Aidalinfo/drawio-diagrams/blob/main/SKILL.md>
+- Brut (raw) : `https://raw.githubusercontent.com/Killian-Aidalinfo/drawio-diagrams/main/SKILL.md`
+
 ## Installation
 
 Clone le repo directement comme dossier de skill :
